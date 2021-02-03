@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>Singulink.Numerics</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Singulink</Authors>
+    <Company>Singulink</Company>
+    <Description>Extensions and helpers for BigInteger, including a cache that stores powers of numbers so they don't have to be computed each time.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Singulink/Singulink.Numerics.BigIntegerExtensions</PackageProjectUrl>
+    <PackageIcon>Singulink Icon 128x128.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+    <None Include="..\..\Resources\Singulink Icon 128x128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+</Project>
