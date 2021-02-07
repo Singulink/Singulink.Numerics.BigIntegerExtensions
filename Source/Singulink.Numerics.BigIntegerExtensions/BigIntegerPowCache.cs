@@ -28,7 +28,7 @@ namespace Singulink.Numerics
 
         #region Static Members
 
-        private static readonly BigIntegerPowCache?[] _cacheLookup = new BigIntegerPowCache[7];
+        private static readonly BigIntegerPowCache?[] _caches = new BigIntegerPowCache[8];
 
         /// <summary>
         /// If there is an existing cache for the given basis then get it and increase its maximum size to meet the specified required max size, otherwise
@@ -45,11 +45,11 @@ namespace Singulink.Numerics
 
             int cacheIndex = basis - 3;
 
-            lock (_cacheLookup) {
-                var cache = _cacheLookup[cacheIndex];
+            lock (_caches) {
+                var cache = _caches[cacheIndex];
 
                 if (cache == null)
-                    _cacheLookup[cacheIndex] = cache = new BigIntegerPowCache(basis);
+                    _caches[cacheIndex] = cache = new BigIntegerPowCache(basis);
 
                 cache.RequireMaxSize(requiredMaxSize);
                 return cache;
