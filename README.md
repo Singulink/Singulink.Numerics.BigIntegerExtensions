@@ -24,4 +24,4 @@ The package is available on NuGet - simply install the `Singulink.Numerics.BigIn
 
 ## API
 
-You can view the API on [FuGet](https://www.fuget.org/packages/Singulink.Numerics.BigIntegerExtensions).
+You can view the API on [FuGet](https://www.fuget.org/packages/Singulink.Numerics.BigIntegerExtensions). 
