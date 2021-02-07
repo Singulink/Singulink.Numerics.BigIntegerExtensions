@@ -12,6 +12,7 @@
     <PackageProjectUrl>https://github.com/Singulink/Singulink.Numerics.BigIntegerExtensions</PackageProjectUrl>
     <PackageIcon>Singulink Icon 128x128.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>© Singulink. All rights reserved.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
