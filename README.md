@@ -4,7 +4,7 @@
 [![View nuget packages](https://img.shields.io/nuget/v/Singulink.Numerics.BigIntegerExtensions.svg)](https://www.nuget.org/packages/Singulink.Numerics.BigIntegerExtensions/)
 [![Build and Test](https://github.com/Singulink/Singulink.Numerics.BigIntegerExtensions/workflows/build%20and%20test/badge.svg)](https://github.com/Singulink/Singulink.Numerics.BigIntegerExtensions/actions?query=workflow%3A%22build+and+test%22)
 
-**BigIntegerExtensions** provides some helper `BigInteger` extension methods and a super fast power cache that serves as a replacement for `BigInteger.Pow()` for bases between 3 and 10 (inclusive) to quickly get cached values instead of calculating them each time they are needed. The cache is used by [Singulink.Numerics.BigDecimal](https://github.com/Singulink/Singulink.Numerics.BigDecimal/) to greatly optimize performance.
+**BigIntegerExtensions** provides some helper `BigInteger` extension methods and a super fast power cache that serves as a replacement for `BigInteger.Pow()` for bases between 3 and 10 (inclusive) to quickly get cached values instead of calculating them each time they are needed. The cache is used by [Singulink.Numerics.BigDecimal](https://github.com/Singulink/Singulink.Numerics.BigDecimal/) to greatly improve performance for many operations.
 
 ### About Singulink
 
