@@ -19,8 +19,8 @@ namespace Singulink.Numerics
     /// <para>
     /// When an exponent is requested that is larger than the current cache size, the cache is expanded by a minimum of 64 entries or as needed to ensure it
     /// includes the requested exponent. This involves creating a new array to hold the expanded cache, copying previously cached values over, and calculating
-    /// all the rest of the missing values. Since caching results of an exponential operation is already inherently exponential, a linear approach is used to
-    /// expand the size of the cache instead of doubling its size each time.</para>
+    /// all the rest of the missing values. Since caching results of a power function is already exponential in nature, a linear approach is used to
+    /// expand the size of the cache instead of doubling its size.</para>
     /// </remarks>
     public sealed class BigIntegerPowCache
     {
@@ -37,7 +37,7 @@ namespace Singulink.Numerics
         /// <param name="basis">A value between 3 and 10 that specifies the basis of the exponent.</param>
         /// <param name="requiredMaxSize">The required maximum size of the cache. The maximum cached exponent is one less than this size. Caches never have a
         /// smaller max size than 1024.</param>
-        /// <returns>A cache for the given basis that meets or exceeds the specified parameters.</returns>
+        /// <returns>A cache for the given basis that meets or exceeds the required max size.</returns>
         public static BigIntegerPowCache GetCache(int basis, int requiredMaxSize = 1024)
         {
             if (basis is < 3 or > 10)
