@@ -33,15 +33,7 @@ namespace Singulink.Numerics
         }
 
         /// <summary>
-        /// Divides two <see cref="BigInteger"/> values and applies the specified rounding to any fractional component of the result.
-        /// </summary>
-        public static BigInteger Divide(this BigInteger dividend, BigInteger divisor, MidpointRounding mode = MidpointRounding.ToEven)
-        {
-            return Divide(dividend, divisor, mode.ToRoundingMode());
-        }
-
-        /// <summary>
-        /// Divides two <see cref="BigInteger"/> values and applies the specified rounding to any fractional component of the result.
+        /// Divides two <see cref="BigInteger"/> values and uses the specified rounding mode for any fractional component of the result.
         /// </summary>
         public static BigInteger Divide(this BigInteger dividend, BigInteger divisor, RoundingMode mode = RoundingMode.MidpointToEven)
         {
