@@ -11,123 +11,257 @@ namespace Singulink.Numerics.BigIntegerExtensions.Tests
     {
         [TestMethod]
 
-        public void RoundToEven_ZeroResult()
+        public void MidpointToEven_ZeroResult()
         {
-            var r = new BigInteger(0).Divide(10, MidpointRounding.ToEven);
+            var r = new BigInteger(0).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(0, r);
 
-            r = new BigInteger(0).Divide(-10, MidpointRounding.ToEven);
+            r = new BigInteger(0).Divide(-10, RoundingMode.MidpointToEven);
             Assert.AreEqual(0, r);
         }
 
         [TestMethod]
-        public void RoundAwayFromZero_ZeroResult()
+        public void MidpointToEven_NonMidpoint()
         {
-            var r = new BigInteger(0).Divide(10, MidpointRounding.AwayFromZero);
-            Assert.AreEqual(0, r);
-
-            r = new BigInteger(0).Divide(-10, MidpointRounding.AwayFromZero);
-            Assert.AreEqual(0, r);
-        }
-
-        [TestMethod]
-        public void RoundToEven_NonMidPoint()
-        {
-            var r = new BigInteger(2).Divide(3, MidpointRounding.ToEven);
+            var r = new BigInteger(2).Divide(3, RoundingMode.MidpointToEven);
             Assert.AreEqual(1, r);
 
-            r = new BigInteger(-2).Divide(3, MidpointRounding.ToEven);
+            r = new BigInteger(-2).Divide(3, RoundingMode.MidpointToEven);
             Assert.AreEqual(-1, r);
         }
 
         [TestMethod]
-        public void RoundAwayFromZero_NonMidPoint()
+        public void MidpointToEven_Midpoint()
         {
-            var r = new BigInteger(2).Divide(3, MidpointRounding.AwayFromZero);
+            var r = new BigInteger(2).Divide(2, RoundingMode.MidpointToEven);
             Assert.AreEqual(1, r);
 
-            r = new BigInteger(-2).Divide(3, MidpointRounding.AwayFromZero);
-            Assert.AreEqual(-1, r);
-        }
-
-        [TestMethod]
-        public void RoundToEven_MidPoint()
-        {
-            var r = new BigInteger(2).Divide(2, MidpointRounding.ToEven);
-            Assert.AreEqual(1, r);
-
-            r = new BigInteger(-2).Divide(2, MidpointRounding.ToEven);
+            r = new BigInteger(-2).Divide(2, RoundingMode.MidpointToEven);
             Assert.AreEqual(-1, r);
 
-            r = new BigInteger(15).Divide(10, MidpointRounding.ToEven);
+            r = new BigInteger(15).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(2, r);
 
-            r = new BigInteger(25).Divide(10, MidpointRounding.ToEven);
+            r = new BigInteger(25).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(2, r);
 
-            r = new BigInteger(35).Divide(10, MidpointRounding.ToEven);
+            r = new BigInteger(35).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(4, r);
 
-            r = new BigInteger(-15).Divide(10, MidpointRounding.ToEven);
+            r = new BigInteger(-15).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(-2, r);
 
-            r = new BigInteger(-25).Divide(10, MidpointRounding.ToEven);
+            r = new BigInteger(-25).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(-2, r);
 
-            r = new BigInteger(-35).Divide(10, MidpointRounding.ToEven);
+            r = new BigInteger(-35).Divide(10, RoundingMode.MidpointToEven);
             Assert.AreEqual(-4, r);
         }
 
         [TestMethod]
-        public void RoundAwayFromZero_MidPoint()
+        public void MidpointAwayFromZero_ZeroResult()
         {
-            var r = new BigInteger(15).Divide(10, MidpointRounding.AwayFromZero);
+            var r = new BigInteger(0).Divide(10, RoundingMode.MidpointAwayFromZero);
+            Assert.AreEqual(0, r);
+
+            r = new BigInteger(0).Divide(-10, RoundingMode.MidpointAwayFromZero);
+            Assert.AreEqual(0, r);
+        }
+
+        [TestMethod]
+        public void MidpointAwayFromZero_NonMidpoint()
+        {
+            var r = new BigInteger(2).Divide(3, RoundingMode.MidpointAwayFromZero);
+            Assert.AreEqual(1, r);
+
+            r = new BigInteger(-2).Divide(3, RoundingMode.MidpointAwayFromZero);
+            Assert.AreEqual(-1, r);
+        }
+
+        [TestMethod]
+        public void MidpointAwayFromZero_Midpoint()
+        {
+            var r = new BigInteger(15).Divide(10, RoundingMode.MidpointAwayFromZero);
             Assert.AreEqual(2, r);
 
-            r = new BigInteger(25).Divide(10, MidpointRounding.AwayFromZero);
+            r = new BigInteger(25).Divide(10, RoundingMode.MidpointAwayFromZero);
             Assert.AreEqual(3, r);
 
-            r = new BigInteger(35).Divide(10, MidpointRounding.AwayFromZero);
+            r = new BigInteger(35).Divide(10, RoundingMode.MidpointAwayFromZero);
             Assert.AreEqual(4, r);
 
-            r = new BigInteger(-15).Divide(10, MidpointRounding.AwayFromZero);
+            r = new BigInteger(-15).Divide(10, RoundingMode.MidpointAwayFromZero);
             Assert.AreEqual(-2, r);
 
-            r = new BigInteger(-25).Divide(10, MidpointRounding.AwayFromZero);
+            r = new BigInteger(-25).Divide(10, RoundingMode.MidpointAwayFromZero);
             Assert.AreEqual(-3, r);
 
-            r = new BigInteger(-35).Divide(10, MidpointRounding.AwayFromZero);
+            r = new BigInteger(-35).Divide(10, RoundingMode.MidpointAwayFromZero);
             Assert.AreEqual(-4, r);
         }
 
         [TestMethod]
-        public void RoundToZero()
+        public void ToZero()
         {
-            var r = new BigInteger(29).Divide(10, MidpointRounding.ToZero);
+            var r = new BigInteger(29).Divide(10, RoundingMode.ToZero);
             Assert.AreEqual(2, r);
 
-            r = new BigInteger(-29).Divide(10, MidpointRounding.ToZero);
+            r = new BigInteger(-29).Divide(10, RoundingMode.ToZero);
             Assert.AreEqual(-2, r);
-        }
 
-        [TestMethod]
-        public void RoundToNegativeInfinity()
-        {
-            var r = new BigInteger(29).Divide(10, MidpointRounding.ToNegativeInfinity);
+            r = new BigInteger(20).Divide(10, RoundingMode.ToZero);
             Assert.AreEqual(2, r);
 
-            r = new BigInteger(-21).Divide(10, MidpointRounding.ToNegativeInfinity);
+            r = new BigInteger(-30).Divide(10, RoundingMode.ToZero);
             Assert.AreEqual(-3, r);
         }
 
         [TestMethod]
-        public void RoundToPositiveInfinity()
+        public void ToNegativeInfinity()
         {
-            var r = new BigInteger(21).Divide(10, MidpointRounding.ToPositiveInfinity);
+            var r = new BigInteger(29).Divide(10, RoundingMode.ToNegativeInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-21).Divide(10, RoundingMode.ToNegativeInfinity);
+            Assert.AreEqual(-3, r);
+
+            r = new BigInteger(20).Divide(10, RoundingMode.ToNegativeInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-30).Divide(10, RoundingMode.ToNegativeInfinity);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void ToPositiveInfinity()
+        {
+            var r = new BigInteger(21).Divide(10, RoundingMode.ToPositiveInfinity);
             Assert.AreEqual(3, r);
 
-            r = new BigInteger(-29).Divide(10, MidpointRounding.ToPositiveInfinity);
+            r = new BigInteger(-29).Divide(10, RoundingMode.ToPositiveInfinity);
             Assert.AreEqual(-2, r);
+
+            r = new BigInteger(20).Divide(10, RoundingMode.ToPositiveInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-30).Divide(10, RoundingMode.ToPositiveInfinity);
+            Assert.AreEqual(-3, r);
+        }
+
+        // New modes:
+
+        [TestMethod]
+        public void MidpointToZero_Zero()
+        {
+            var r = new BigInteger(20).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-30).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void MidpointToZero_NonMidpoint()
+        {
+            var r = new BigInteger(29).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(3, r);
+
+            r = new BigInteger(22).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-21).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(-2, r);
+
+            r = new BigInteger(-27).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void MidpointToZero_Midpoint()
+        {
+            var r = new BigInteger(25).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-25).Divide(10, RoundingMode.MidpointToZero);
+            Assert.AreEqual(-2, r);
+        }
+
+        [TestMethod]
+        public void MidpointToNegativeInfinity_Zero()
+        {
+            var r = new BigInteger(20).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-30).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void MidpointToNegativeInfinity_NonMidpoint()
+        {
+            var r = new BigInteger(29).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(3, r);
+
+            r = new BigInteger(22).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-21).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(-2, r);
+
+            r = new BigInteger(-27).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void MidpointToNegativeInfinity_Midpoint()
+        {
+            var r = new BigInteger(25).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-25).Divide(10, RoundingMode.MidpointToNegativeInfinity);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void MidpointToPositiveInfinity_Midpoint()
+        {
+            var r = new BigInteger(25).Divide(10, RoundingMode.MidpointToPositiveInfinity);
+            Assert.AreEqual(3, r);
+
+            r = new BigInteger(-25).Divide(10, RoundingMode.MidpointToPositiveInfinity);
+            Assert.AreEqual(-2, r);
+        }
+
+        [TestMethod]
+        public void MidpointToPositiveInfinity_NonMidpoint()
+        {
+            var r = new BigInteger(29).Divide(10, RoundingMode.MidpointToPositiveInfinity);
+            Assert.AreEqual(3, r);
+
+            r = new BigInteger(22).Divide(10, RoundingMode.MidpointToPositiveInfinity);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-21).Divide(10, RoundingMode.MidpointToPositiveInfinity);
+            Assert.AreEqual(-2, r);
+
+            r = new BigInteger(-27).Divide(10, RoundingMode.MidpointToPositiveInfinity);
+            Assert.AreEqual(-3, r);
+        }
+
+        [TestMethod]
+        public void AwayFromZero()
+        {
+            var r = new BigInteger(21).Divide(10, RoundingMode.AwayFromZero);
+            Assert.AreEqual(3, r);
+
+            r = new BigInteger(-21).Divide(10, RoundingMode.AwayFromZero);
+            Assert.AreEqual(-3, r);
+
+            r = new BigInteger(20).Divide(10, RoundingMode.AwayFromZero);
+            Assert.AreEqual(2, r);
+
+            r = new BigInteger(-30).Divide(10, RoundingMode.AwayFromZero);
+            Assert.AreEqual(-3, r);
         }
     }
 }

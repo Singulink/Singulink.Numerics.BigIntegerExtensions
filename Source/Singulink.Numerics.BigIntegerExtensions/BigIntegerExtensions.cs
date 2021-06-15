@@ -37,43 +37,67 @@ namespace Singulink.Numerics
         /// </summary>
         public static BigInteger Divide(this BigInteger dividend, BigInteger divisor, MidpointRounding mode = MidpointRounding.ToEven)
         {
-            if ((uint)mode > 4)
+            return Divide(dividend, divisor, mode.ToRoundingMode());
+        }
+
+        /// <summary>
+        /// Divides two <see cref="BigInteger"/> values and applies the specified rounding to any fractional component of the result.
+        /// </summary>
+        public static BigInteger Divide(this BigInteger dividend, BigInteger divisor, RoundingMode mode = RoundingMode.MidpointToEven)
+        {
+            if ((uint)mode > 8)
                 throw new ArgumentException($"Unsupported rounding mode '{mode}'.", nameof(mode));
 
-            if (mode == (MidpointRounding)2) // ToZero
+            if (mode == RoundingMode.ToZero)
                 return dividend / divisor;
 
             var result = BigInteger.DivRem(dividend, divisor, out var remainder);
+            int sign = dividend.Sign * divisor.Sign;
 
             if (!remainder.IsZero) {
                 switch (mode) {
-                    case (MidpointRounding)3: // ToNegativeInfinity
-                        if (dividend.Sign * divisor.Sign < 0)
+                    case RoundingMode.ToNegativeInfinity:
+                        if (sign < 0)
                             result -= BigInteger.One;
 
                         break;
 
-                    case (MidpointRounding)4: // ToPositiveInfinity
-                        if (dividend.Sign * divisor.Sign > 0)
+                    case RoundingMode.ToPositiveInfinity:
+                        if (sign > 0)
                             result += BigInteger.One;
 
+                        break;
+
+                    case RoundingMode.AwayFromZero:
+                        result += sign > 0 ? BigInteger.One : BigInteger.MinusOne;
                         break;
 
                     default:
                         int compareResult = (BigInteger.Abs(remainder) << 1).CompareTo(BigInteger.Abs(divisor));
 
                         if (compareResult > 0) {
-                            result = RoundAwayFromZero(result, dividend.Sign * divisor.Sign);
+                            result = RoundAwayFromZero(result, sign);
                         }
                         else if (compareResult == 0) {
                             switch (mode) {
-                                case MidpointRounding.AwayFromZero:
-                                    result = RoundAwayFromZero(result, dividend.Sign * divisor.Sign);
+                                case RoundingMode.MidpointAwayFromZero:
+                                    result = RoundAwayFromZero(result, sign);
                                     break;
 
-                                case MidpointRounding.ToEven:
+                                case RoundingMode.MidpointToEven:
                                     if (!result.IsEven)
-                                        result = RoundAwayFromZero(result, dividend.Sign * divisor.Sign);
+                                        result = RoundAwayFromZero(result, sign);
+
+                                    break;
+                                case RoundingMode.MidpointToNegativeInfinity:
+                                    if (sign < 0)
+                                        result -= BigInteger.One;
+
+                                    break;
+
+                                case RoundingMode.MidpointToPositiveInfinity:
+                                    if (sign > 0)
+                                        result += BigInteger.One;
 
                                     break;
                             }
