@@ -10,6 +10,10 @@ namespace Singulink.Numerics
     {
         private static readonly BigIntegerPowCache BigIntegerPow10 = BigIntegerPowCache.GetCache(10);
 
+#if !NETSTANDARD
+        private static readonly double Log2 = Math.Log10(2);
+#endif
+
         /// <summary>
         /// Calculates the total number of base 10 digits in the value.
         /// </summary>
@@ -23,13 +27,17 @@ namespace Singulink.Numerics
             if (value.IsOne)
                 return 1;
 
-            int exp = (int)Math.Ceiling(BigInteger.Log10(value));
-            var test = BigIntegerPow10.Get(exp);
+#if NETSTANDARD
+            int base10Digits = (int)Math.Ceiling(BigInteger.Log10(value));
+#else
+            int base10Digits = (int)(value.GetBitLength() * Log2);
+#endif
+            var reference = BigIntegerPow10.Get(base10Digits);
 
-            if (value >= test)
-                exp++;
+            if (value >= reference)
+                base10Digits++;
 
-            return exp;
+            return base10Digits;
         }
 
         /// <summary>
