@@ -27,10 +27,10 @@ namespace Singulink.Numerics
             if (value.IsOne)
                 return 1;
 
-#if NETSTANDARD
-            int base10Digits = (int)Math.Ceiling(BigInteger.Log10(value));
+#if !NETSTANDARD
+            int base10Digits = (int)(value.GetBitLength() * Log2); // improves CountDigits() perf by ~2.5x on NET5+
 #else
-            int base10Digits = (int)(value.GetBitLength() * Log2);
+            int base10Digits = (int)Math.Ceiling(BigInteger.Log10(value));
 #endif
             var reference = BigIntegerPow10.Get(base10Digits);
 
