@@ -28,7 +28,7 @@ The package multitargets .NET 5 for more optimized digit counting.
 ## Features
 
 - `BigIntegerPowCache` for cached lookups of powers.
-- `CountDigits()` extension method
+- `CountDigits()` extension method with a highly optimized digit counting algorithm.
 - `Divide()` extension method that supports a wide range of rounding modes instead of just truncating the result like the standard division operator.
 
 ## API
