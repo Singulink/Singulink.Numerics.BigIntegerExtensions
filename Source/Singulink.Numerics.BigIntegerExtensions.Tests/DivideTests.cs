@@ -1,5 +1,8 @@
-﻿using System;
+﻿extern alias BigIntegerExtensionsAssembly;
+
+using System;
 using System.Numerics;
+using BigIntegerExtensionsAssembly::Singulink.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #pragma warning disable CA1707 // Identifiers should not contain underscores

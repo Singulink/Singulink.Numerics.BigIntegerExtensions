@@ -1,7 +1,10 @@
+extern alias BigIntegerExtensionsAssembly;
+
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using BigIntegerExtensionsAssembly::Singulink.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Singulink.Numerics.BigIntegerExtensions.Tests
@@ -14,7 +17,8 @@ namespace Singulink.Numerics.BigIntegerExtensions.Tests
         [TestMethod]
         public void CacheBasisRange()
         {
-            for (int i = 3; i <= 10; i++) {
+            for (int i = 3; i <= 10; i++)
+            {
                 var cache = BigIntegerPowCache.GetCache(i);
                 Assert.AreSame(cache, BigIntegerPowCache.GetCache(i));
             }

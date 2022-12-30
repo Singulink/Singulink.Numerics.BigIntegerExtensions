@@ -45,7 +45,8 @@ namespace Singulink.Numerics
 
             int cacheIndex = basis - 3;
 
-            lock (_caches) {
+            lock (_caches)
+            {
                 var cache = _caches[cacheIndex];
 
                 if (cache == null)
@@ -90,7 +91,8 @@ namespace Singulink.Numerics
         [MethodImpl(MethodImplOptions.NoInlining)]
         private BigInteger GetUncached(int exponent)
         {
-            if (exponent < MaxSize) {
+            if (exponent < MaxSize)
+            {
                 GrowTo(exponent);
                 return _cache[exponent];
             }
@@ -100,7 +102,8 @@ namespace Singulink.Numerics
 
         private void GrowTo(int exponent)
         {
-            lock (_syncRoot) {
+            lock (_syncRoot)
+            {
                 if (exponent < _cache.Length)
                     return;
 
@@ -122,7 +125,8 @@ namespace Singulink.Numerics
 
         private void RequireMaxSize(int size)
         {
-            lock (_syncRoot) {
+            lock (_syncRoot)
+            {
                 MaxSize = Math.Max(size, MaxSize);
             }
         }
