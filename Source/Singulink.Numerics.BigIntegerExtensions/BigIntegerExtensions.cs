@@ -280,9 +280,9 @@ namespace Singulink.Numerics
             Debug.WriteLine("[BigIntegerExtensions] WARNING: Optimizations disabled for debug build.");
             return null;
 #else
-            if (Environment.Version.Major > 7)
+            if (Environment.Version.Major > 8)
             {
-                Debug.WriteLine($"[BigIntegerExtensions] WARNING: Runtime dependent optimizations have been disabled for safety because detected .NET runtime version is greater than 7.x. Update the 'Singulink.Numerics.BigIntegerExtensions' package to enable optimizations on newer runtimes.");
+                Debug.WriteLine("[BigIntegerExtensions] WARNING: Runtime dependent optimizations have been disabled for safety because detected .NET runtime version is greater than 8.x. Update the 'Singulink.Numerics.BigIntegerExtensions' package to enable optimizations on newer runtimes.");
                 return null;
             }
 
