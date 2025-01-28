@@ -1,3 +1,3 @@
-# Singulink.Numerics.BigDecimal
+# Singulink.Numerics.BigIntegerExtensions
 
-Use the table of contents to browse API documentation for the **BigDecimal** library.
+Use the table of contents to browse API documentation for the **BigIntegerExtensions** library.

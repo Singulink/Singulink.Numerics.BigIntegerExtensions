@@ -1,6 +1,9 @@
 {
   "metadata": [
     {
+      "properties": {
+          "TargetFramework": "net8.0"
+      },
       "src": [
         {
           "files": [
@@ -10,7 +13,10 @@
         }
       ],
       "dest": "api",
-      "disableGitFeatures": false,
+      "filter": "filterConfig.yml",
+      "memberLayout": "separatePages",
+      "includeExplicitInterfaceImplementations": true,
+      "disableGitFeatures": true,
       "disableDefaultFilter": false
     }
   ],
@@ -24,8 +30,8 @@
       "_enableSearch": true,
       "_enableNewTab": true
     },
-    "template": ["default", "templates/singulinkfx", "plugins/memberpage.2.59.4", "plugins/memberpage-extras"],
-    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ],
+    "template": ["default", "templates/singulinkfx"],
+    "xref": [ "https://learn.microsoft.com/en-us/dotnet/.xrefmap.json" ],
     "content": [
       {
         "files": [
@@ -59,13 +65,12 @@
       }
     ],
     "dest": "_site",
+    "disableGitFeatures": true,
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "postProcessors": [],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,
-    "keepFileLink": false,
-    "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "keepFileLink": false
   }
 }
