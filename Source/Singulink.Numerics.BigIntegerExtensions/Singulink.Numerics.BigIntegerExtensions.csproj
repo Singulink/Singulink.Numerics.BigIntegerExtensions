@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net7.0;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0;</TargetFrameworks>
     <RootNamespace>Singulink.Numerics</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
@@ -10,11 +9,18 @@
     <Description>Extensions and helpers for BigInteger, including a cache that stores powers of numbers so they don't have to be computed each time.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Singulink/Singulink.Numerics.BigIntegerExtensions</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>Singulink Icon 128x128.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>© Singulink. All rights reserved.</Copyright>
-    <Version>2.2</Version>
+    <Version>2.3</Version>
+
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <PropertyGroup Label="Source Link" Condition="'$(Configuration)' == 'Release'">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -22,10 +28,6 @@
     <IncludeSymbols>true</IncludeSymbols>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-
-  <ItemGroup Label="Source Link" Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="stylecop.json" />
@@ -40,7 +42,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Memory" Version="4.6.0" />
   </ItemGroup>
-
 </Project>
