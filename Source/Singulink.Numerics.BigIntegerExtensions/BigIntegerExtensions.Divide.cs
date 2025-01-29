@@ -22,62 +22,62 @@ public static partial class BigIntegerExtensions
         var result = BigInteger.DivRem(dividend, divisor, out var remainder);
         int sign = dividend.Sign * divisor.Sign;
 
-        if (!remainder.IsZero)
+        if (remainder.IsZero)
+            return result;
+
+        switch (mode)
         {
-            switch (mode)
-            {
-                case RoundingMode.ToNegativeInfinity:
-                    if (sign < 0)
-                        result -= BigInteger.One;
+            case RoundingMode.ToNegativeInfinity:
+                if (sign < 0)
+                    result -= BigInteger.One;
 
-                    break;
+                break;
 
-                case RoundingMode.ToPositiveInfinity:
-                    if (sign > 0)
-                        result += BigInteger.One;
+            case RoundingMode.ToPositiveInfinity:
+                if (sign > 0)
+                    result += BigInteger.One;
 
-                    break;
+                break;
 
-                case RoundingMode.AwayFromZero:
-                    result += sign > 0 ? BigInteger.One : BigInteger.MinusOne;
-                    break;
+            case RoundingMode.AwayFromZero:
+                result += sign > 0 ? BigInteger.One : BigInteger.MinusOne;
+                break;
 
-                default:
-                    int compareResult = (BigInteger.Abs(remainder) << 1).CompareTo(BigInteger.Abs(divisor));
+            default:
+                int compareResult = (BigInteger.Abs(remainder) << 1).CompareTo(BigInteger.Abs(divisor));
 
-                    if (compareResult > 0)
+                if (compareResult > 0)
+                {
+                    result = RoundAwayFromZero(result, sign);
+                }
+                else if (compareResult == 0)
+                {
+                    switch (mode)
                     {
-                        result = RoundAwayFromZero(result, sign);
-                    }
-                    else if (compareResult == 0)
-                    {
-                        switch (mode)
-                        {
-                            case RoundingMode.MidpointAwayFromZero:
+                        case RoundingMode.MidpointAwayFromZero:
+                            result = RoundAwayFromZero(result, sign);
+                            break;
+
+                        case RoundingMode.MidpointToEven:
+                            if (!result.IsEven)
                                 result = RoundAwayFromZero(result, sign);
-                                break;
 
-                            case RoundingMode.MidpointToEven:
-                                if (!result.IsEven)
-                                    result = RoundAwayFromZero(result, sign);
+                            break;
+                        case RoundingMode.MidpointToNegativeInfinity:
+                            if (sign < 0)
+                                result -= BigInteger.One;
 
-                                break;
-                            case RoundingMode.MidpointToNegativeInfinity:
-                                if (sign < 0)
-                                    result -= BigInteger.One;
+                            break;
 
-                                break;
+                        case RoundingMode.MidpointToPositiveInfinity:
+                            if (sign > 0)
+                                result += BigInteger.One;
 
-                            case RoundingMode.MidpointToPositiveInfinity:
-                                if (sign > 0)
-                                    result += BigInteger.One;
-
-                                break;
-                        }
+                            break;
                     }
+                }
 
-                    break;
-            }
+                break;
         }
 
         return result;
