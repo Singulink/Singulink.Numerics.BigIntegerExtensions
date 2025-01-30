@@ -21,7 +21,7 @@ public static partial class BigIntegerExtensions
     private static readonly BigInteger MinusUInt64Max = -(BigInteger)ulong.MaxValue;
     private static readonly BigInteger Int64Min = long.MinValue;
 
-#if !NETSTANDARD
+#if NET
     private static readonly BigInteger UInt128Max = UInt128.MaxValue;
     private static readonly BigInteger MinusUInt128Max = -(BigInteger)UInt128.MaxValue;
 #endif
@@ -29,7 +29,7 @@ public static partial class BigIntegerExtensions
     private static readonly FieldInfo? BitsField = GetBitsField();
     private static readonly BigIntegerPowCache Pow10 = BigIntegerPowCache.GetCache(10);
 
-#if !NETSTANDARD
+#if NET
     private static readonly double Log2 = double.Log10(2);
 #endif
 
@@ -74,7 +74,7 @@ public static partial class BigIntegerExtensions
             if (value <= UInt64Max)
                 return SmallCount((ulong)value);
 
-#if !NETSTANDARD
+#if NET
             if (value <= UInt128Max)
                 return MediumCount((UInt128)value);
 #endif
@@ -90,7 +90,7 @@ public static partial class BigIntegerExtensions
             if (value <= UInt64Max)
                 return SmallCount((ulong)value);
 
-#if !NETSTANDARD
+#if NET
             if (value <= UInt128Max)
                 return MediumCount((UInt128)value);
 #endif
@@ -103,7 +103,7 @@ public static partial class BigIntegerExtensions
             if (value >= MinusUInt64Max)
                 return SmallCount((ulong)BigInteger.Abs(value));
 
-#if !NETSTANDARD
+#if NET
             if (value >= MinusUInt128Max)
                 return MediumCount((UInt128)BigInteger.Abs(value));
 #endif
@@ -124,7 +124,7 @@ public static partial class BigIntegerExtensions
             {
                 ulong remainder;
 
-#if !NETSTANDARD
+#if NET
                 (mantissa, remainder) = ulong.DivRem(mantissa, 10);
 #else
                 (mantissa, remainder) = DivRem(mantissa, 10);
@@ -145,7 +145,7 @@ public static partial class BigIntegerExtensions
             return (digits, trailingZeros);
         }
 
-#if !NETSTANDARD
+#if NET
         static (int Digits, int TrailingZeros) MediumCount(UInt128 mantissa)
         {
             Debug.Assert(mantissa != 0, "unexpected zero value");
@@ -286,7 +286,7 @@ public static partial class BigIntegerExtensions
     {
         value = BigInteger.Abs(value);
 
-#if !NETSTANDARD
+#if NET
         // Improves CountDigits() perf by ~2.5x on .NET.
 
         // NOTE: this works without needing the Abs() call above, which will be useful to avoid Abs() when BigInteger moves to 2's complement representation,
