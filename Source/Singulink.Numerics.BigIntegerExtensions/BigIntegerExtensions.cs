@@ -331,25 +331,25 @@ public static partial class BigIntegerExtensions
 #else
         const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
 
-        var fields = typeof(BigInteger)
-            .GetFields(bindingFlags)
-            .OrderBy(f => f.FieldType.Name)
-            .ToArray();
+        var fields = typeof(BigInteger).GetFields(bindingFlags).ToArray();
 
-        if (fields.Length != 2 || fields[0].FieldType != typeof(int) || fields[1].FieldType != typeof(uint[]))
+        var signField = fields.FirstOrDefault(f => f.FieldType == typeof(int));
+        var bitsField = fields.FirstOrDefault(f => f.FieldType == typeof(uint[]));
+
+        if (fields.Length is not 2 || bitsField is null || signField is null)
         {
             Trace.TraceWarning("[BigIntegerExtensions] Optimizations disabled - unexpected BigInteger internal field layout.");
             return null;
         }
 
-        var bitsField = fields[1];
-
         // Test a sample negative BigInteger value to ensure the field contains the expected data.
 
         var testValue = new BigInteger(int.MinValue) * 2;
+
+        int testSign = (int)signField.GetValueDirect(__makeref(testValue))!;
         uint[] testBits = (uint[])bitsField.GetValueDirect(__makeref(testValue));
 
-        if (testBits?.Length is 2 && testBits[0] is 0 && testBits[1] is 1)
+        if (testSign is -1 && testBits?.Length is 2 && testBits[0] is 0 && testBits[1] is 1)
             return bitsField;
 
         Trace.TraceWarning("[BigIntegerExtensions] Optimizations disabled - unexpected BigInteger internal bits representation.");
