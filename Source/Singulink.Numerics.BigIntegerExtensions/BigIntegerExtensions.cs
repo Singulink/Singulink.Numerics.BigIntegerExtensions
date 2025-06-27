@@ -179,7 +179,7 @@ public static partial class BigIntegerExtensions
         {
             Debug.Assert(BitsField != null, "bits field optimizations not enabled");
 
-            uint[] valueBits = (uint[])BitsField!.GetValueDirect(__makeref(value));
+            uint[] valueBits = Unsafe.As<uint[]>(BitsField!.GetValueDirect(__makeref(value)));
 
             Debug.Assert(valueBits != null, "value too small to have bits array set");
 
