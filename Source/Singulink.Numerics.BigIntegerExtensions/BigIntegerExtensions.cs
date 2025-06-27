@@ -177,17 +177,17 @@ public static partial class BigIntegerExtensions
 
         static (int Digits, int TrailingZeros) LargeBitFieldCount(BigInteger value)
         {
-            Debug.Assert(BitsField != null, "bits field optimizations not enabled");
+            Debug.Assert(BitsField is not null, "bits field optimizations not enabled");
 
-            uint[] valueBits = Unsafe.As<uint[]>(BitsField!.GetValueDirect(__makeref(value)));
+            uint[] valueBits = Unsafe.As<uint[]>(BitsField.GetValueDirect(__makeref(value)));
 
-            Debug.Assert(valueBits != null, "value too small to have bits array set");
+            Debug.Assert(valueBits is not null, "value too small to have bits array set");
 
             // First convert to base 10^9.
             const uint kuBase = 1000000000; // 10^9
             const int kcchBase = 9;
 
-            int cuSrc = valueBits!.Length;
+            int cuSrc = valueBits.Length;
             int cuMax = checked((cuSrc * 10 / 9) + 2);
 
             uint[] rentedArray = null;
