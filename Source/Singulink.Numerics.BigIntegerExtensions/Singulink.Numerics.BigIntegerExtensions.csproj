@@ -13,7 +13,7 @@
     <PackageIcon>Singulink Icon 128x128.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>© Singulink. All rights reserved.</Copyright>
-    <Version>2.3</Version>
+    <Version>2.3.2</Version>
 
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
   </PropertyGroup>
@@ -43,5 +43,9 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Memory" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Singulink.Enums" Version="2.3.1" />
   </ItemGroup>
 </Project>

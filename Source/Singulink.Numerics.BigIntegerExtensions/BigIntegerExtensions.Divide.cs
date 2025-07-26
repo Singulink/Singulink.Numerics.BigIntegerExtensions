@@ -1,5 +1,5 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
+using Singulink.Enums;
 
 namespace Singulink.Numerics;
 
@@ -13,8 +13,7 @@ public static partial class BigIntegerExtensions
     /// </summary>
     public static BigInteger Divide(this BigInteger dividend, BigInteger divisor, RoundingMode mode = RoundingMode.MidpointToEven)
     {
-        if ((uint)mode > 8)
-            throw new ArgumentException($"Unsupported rounding mode '{mode}'.", nameof(mode));
+        mode.ThrowIfNotDefined(nameof(mode));
 
         if (mode == RoundingMode.ToZero)
             return dividend / divisor;
