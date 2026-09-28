@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Singulink.Numerics;
 
@@ -26,6 +27,7 @@ public static partial class BigIntegerExtensions
 #endif
 
     private static readonly FieldInfo? BitsField = GetBitsField();
+    private static readonly BitsLayout BitsFieldLayout = GetBitsFieldLayout();
     private static readonly BigIntegerPowCache Pow10 = BigIntegerPowCache.GetCache(10);
 
 #if NET
@@ -33,16 +35,38 @@ public static partial class BigIntegerExtensions
 #endif
 
     /// <summary>
+    /// Describes the internal storage layout of the BigInteger magnitude bits.
+    /// </summary>
+    private enum BitsLayout
+    {
+        /// <summary>
+        /// Layout is unknown so optimizations that depend on it are disabled.
+        /// </summary>
+        Unsupported,
+
+        /// <summary>
+        /// Magnitude is stored as a little-endian array of 32-bit words (all runtimes up to and including .NET 10).
+        /// </summary>
+        UInt32Array,
+
+        /// <summary>
+        /// Magnitude is stored as a little-endian array of native-sized words (.NET 11+).
+        /// </summary>
+        NativeUIntArray,
+    }
+
+    /// <summary>
     /// Gets a value indicating whether optimizations that depend on expected BigInteger structure internals are enabled.
     /// </summary>
     /// <remarks>
     /// Optimizations for this version of the library are enabled as long as BigInteger's internal representation matches expectations that the optimizations
-    /// depend on, which at the time of release of this version of the library is true for all supported runtimes up to and including .NET 9. A warning is
-    /// emitted to the debug console and optimizations are disabled if changes to the BigInteger internals are detected as there are plans to eventually
-    /// reimplement the type to utilize a 2's complement internal representation instead of the current 1's complement representation. A new version of the
+    /// depend on, which at the time of release of this version of the library is true for all supported runtimes up to and including .NET 11. Both the
+    /// 32-bit word magnitude storage used by runtimes up to .NET 10 and the native word magnitude storage introduced in .NET 11 are supported. A warning is
+    /// emitted to the debug console and optimizations are disabled if other changes to the BigInteger internals are detected, as there are plans to eventually
+    /// reimplement the type to utilize a 2's complement internal representation instead of the current sign-magnitude representation. A new version of the
     /// library will be released if/when that happens to accommodate the new implementation.
     /// </remarks>
-    public static bool OptimizationsEnabled => BitsField != null;
+    public static bool OptimizationsEnabled => BitsFieldLayout is not BitsLayout.Unsupported;
 
     /// <summary>
     /// Calculates the number of base 10 digits in the value. Zero values return 1.
@@ -78,7 +102,7 @@ public static partial class BigIntegerExtensions
                 return MediumCount((UInt128)value);
 #endif
 
-            return LargeBitFieldCount(value);
+            return LargeBitFieldCount(GetBits(ref value));
         }
 
         // Optimizations are disabled so BigInteger internal implementation changed. Avoid Abs() when possible since it probably switched to 2's complement
@@ -174,13 +198,9 @@ public static partial class BigIntegerExtensions
         }
 #endif
 
-        static (int Digits, int TrailingZeros) LargeBitFieldCount(BigInteger value)
+        static (int Digits, int TrailingZeros) LargeBitFieldCount(ReadOnlySpan<uint> valueBits)
         {
-            Debug.Assert(BitsField is not null, "bits field optimizations not enabled");
-
-            uint[] valueBits = Unsafe.As<uint[]>(BitsField.GetValueDirect(__makeref(value)));
-
-            Debug.Assert(valueBits is not null, "value too small to have bits array set");
+            Debug.Assert(valueBits.Length > 0, "value too small to have bits array set");
 
             // First convert to base 10^9.
             const uint kuBase = 1000000000; // 10^9
@@ -189,7 +209,7 @@ public static partial class BigIntegerExtensions
             int cuSrc = valueBits.Length;
             int cuMax = checked((cuSrc * 10 / 9) + 2);
 
-            uint[] rentedArray = null;
+            uint[]? rentedArray = null;
             Span<uint> rguDst = cuMax <= 128 ? stackalloc uint[128] : (rentedArray = ArrayPool<uint>.Shared.Rent(cuMax));
 
             int cuDst = 0;
@@ -289,7 +309,7 @@ public static partial class BigIntegerExtensions
         // Improves CountDigits() perf by ~2.5x on .NET.
 
         // NOTE: this works without needing the Abs() call above, which will be useful to avoid Abs() when BigInteger moves to 2's complement representation,
-        // but GetBitLength() is faster for non-negative values in the current 1's complement representation so we keep the Abs() call.
+        // but GetBitLength() is faster for non-negative values in the current sign-magnitude representation so we keep the Abs() call.
 
         int base10Digits = (int)(value.GetBitLength() * Log2);
 #else
@@ -321,38 +341,112 @@ public static partial class BigIntegerExtensions
         return ((ulong)uHi << KcbitUint) | uLo;
     }
 
+    /// <summary>
+    /// Gets the magnitude of the value as little-endian 32-bit words. Optimizations must be enabled and the value must be too large to be stored inline
+    /// (i.e. outside the range of <see cref="int"/>).
+    /// </summary>
+    private static ReadOnlySpan<uint> GetBits(ref BigInteger value) => GetBits(ref value, BitsFieldLayout);
+
+    private static ReadOnlySpan<uint> GetBits(ref BigInteger value, BitsLayout layout)
+    {
+        Debug.Assert(layout is not BitsLayout.Unsupported, "bits field optimizations not enabled");
+
+        // Native words are stored little-endian so on little-endian platforms they can be reinterpreted directly as little-endian 32-bit words. Any extra
+        // zero high word this produces is harmless to the counting algorithm.
+
+#if NET
+        if (layout is BitsLayout.UInt32Array)
+            return GetUInt32Bits(ref value);
+
+        return MemoryMarshal.Cast<nuint, uint>(GetNativeUIntBits(ref value));
+#else
+        object? bits = BitsField!.GetValueDirect(__makeref(value));
+
+        if (layout is BitsLayout.UInt32Array)
+            return (uint[]?)bits;
+
+        return MemoryMarshal.Cast<nuint, uint>((nuint[]?)bits);
+#endif
+    }
+
+#if NET
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_bits")]
+    private static extern ref uint[]? GetUInt32Bits(ref BigInteger value);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_bits")]
+    private static extern ref nuint[]? GetNativeUIntBits(ref BigInteger value);
+#endif
+
     private static FieldInfo? GetBitsField()
+    {
+        const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+        var fields = typeof(BigInteger).GetFields(bindingFlags);
+
+        // Expected layout is a sign field and a magnitude bits field.
+
+        if (fields.Length is not 2 || !fields.Any(f => f.FieldType == typeof(int)))
+            return null;
+
+        var bitsField = fields.FirstOrDefault(f => f.FieldType == typeof(uint[]) || f.FieldType == typeof(nuint[]));
+
+#if NET
+        // The UnsafeAccessor-based field access requires the field name to match.
+        if (bitsField?.Name is not "_bits")
+            return null;
+#endif
+
+        return bitsField;
+    }
+
+    private static BitsLayout GetBitsFieldLayout()
     {
 #if DEBUG
         // Disable optimizations in debug mode so that those paths are also tested.
         Debug.WriteLine("[BigIntegerExtensions] WARNING: Optimizations disabled for debug build.");
-        return null;
+        return BitsLayout.Unsupported;
 #else
-        const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
-
-        var fields = typeof(BigInteger).GetFields(bindingFlags).ToArray();
-
-        var signField = fields.FirstOrDefault(f => f.FieldType == typeof(int));
-        var bitsField = fields.FirstOrDefault(f => f.FieldType == typeof(uint[]));
-
-        if (fields.Length is not 2 || bitsField is null || signField is null)
+        if (BitsField is null)
         {
             Trace.TraceWarning("[BigIntegerExtensions] Optimizations disabled - unexpected BigInteger internal field layout.");
-            return null;
+            return BitsLayout.Unsupported;
         }
 
-        // Test a sample negative BigInteger value to ensure the field contains the expected data.
+        BitsLayout layout;
 
-        var testValue = new BigInteger(int.MinValue) * 2;
+        if (BitsField.FieldType == typeof(uint[]))
+        {
+            layout = BitsLayout.UInt32Array;
+        }
+        else if (BitConverter.IsLittleEndian || IntPtr.Size is 4)
+        {
+            layout = BitsLayout.NativeUIntArray;
+        }
+        else
+        {
+            Trace.TraceWarning("[BigIntegerExtensions] Optimizations disabled - big-endian native word BigInteger layout is not supported.");
+            return BitsLayout.Unsupported;
+        }
 
-        int testSign = (int)signField.GetValueDirect(__makeref(testValue))!;
-        uint[] testBits = (uint[])bitsField.GetValueDirect(__makeref(testValue));
+        // Test sample values to ensure the field contains the expected data (sign stored separately and magnitude stored as little-endian words).
 
-        if (testSign is -1 && testBits?.Length is 2 && testBits[0] is 0 && testBits[1] is 1)
-            return bitsField;
+        try
+        {
+            var testValue1 = new BigInteger(int.MinValue) * 2; // -2^32
+            var testValue2 = (new BigInteger(3) << 32) + 7;
+
+            if (testValue1.Sign is -1 && IsExpectedBits(GetBits(ref testValue1, layout), 0, 1) && IsExpectedBits(GetBits(ref testValue2, layout), 7, 3))
+                return layout;
+        }
+        catch (Exception ex)
+        {
+            Trace.TraceWarning($"[BigIntegerExtensions] Optimizations disabled - error accessing BigInteger internal bits: {ex.Message}");
+            return BitsLayout.Unsupported;
+        }
 
         Trace.TraceWarning("[BigIntegerExtensions] Optimizations disabled - unexpected BigInteger internal bits representation.");
-        return null;
+        return BitsLayout.Unsupported;
+
+        static bool IsExpectedBits(ReadOnlySpan<uint> bits, uint low, uint high) => bits.Length is 2 && bits[0] == low && bits[1] == high;
 #endif
     }
 }

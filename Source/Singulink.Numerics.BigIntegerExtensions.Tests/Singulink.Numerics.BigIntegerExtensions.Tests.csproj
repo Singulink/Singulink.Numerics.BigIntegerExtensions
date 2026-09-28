@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net48;net8.0</TargetFrameworks>
+    <!-- .NET 11 changed BigInteger internals so also run tests on it when the SDK in use supports it -->
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
     <NoWarn>1591</NoWarn>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

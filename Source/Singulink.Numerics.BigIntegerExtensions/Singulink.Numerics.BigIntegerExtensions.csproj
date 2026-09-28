@@ -13,7 +13,7 @@
     <PackageIcon>Singulink Icon 128x128.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>© Singulink. All rights reserved.</Copyright>
-    <Version>2.3.2</Version>
+    <Version>2.4.0</Version>
 
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
   </PropertyGroup>
