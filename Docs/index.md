@@ -18,7 +18,7 @@
 
 Here are some additonal links to get you started:
 
-- [API Documentation](api/index.md) - Browse the fully documented API here.
+- [API Documentation](api/Singulink.Numerics.yml) - Browse the fully documented API here.
 - [Chat on Discord](https://discord.gg/EkQhJFsBu6) - Have questions or want to discuss the library? This is the place for all Singulink project discussions.
 - [Github Repo](https://github.com/Singulink/Singulink.Numerics.BigIntegerExtensions) - File issues, contribute pull requests or check out the code for yourself!
 
