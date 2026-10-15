@@ -10,7 +10,7 @@ namespace Singulink.Numerics.BigIntegerExtensions.Tests;
 [TestClass]
 public class CountTests
 {
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("0", 1, 0)]
     [DataRow("1", 1, 0)]
     [DataRow("-1", 1, 0)]

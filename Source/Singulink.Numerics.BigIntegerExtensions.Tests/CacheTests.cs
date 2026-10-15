@@ -23,8 +23,8 @@ public class CacheTests
             Assert.AreSame(cache, BigIntegerPowCache.GetCache(i));
         }
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => BigIntegerPowCache.GetCache(2));
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => BigIntegerPowCache.GetCache(11));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => BigIntegerPowCache.GetCache(2));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => BigIntegerPowCache.GetCache(11));
     }
 
     [TestMethod]
